@@ -1,0 +1,21 @@
+Hi Anna,
+
+Attached are a few files that should be useful. 
+GBM is offline about ~15% of the time when it is transiting the South Atlantic 
+Anomaly. When it is online it is in a good time interval. 
+Once you know if that GBM was active at a given time you can check if it was
+observing a given position by calculating the angular offset from the source 
+position to the center of the Earth, 
+and anything ~<67 degrees was occulted 
+(between ~66.5 and 67.5 its a bit uncertain, 
+since the Earth isn't a perfect sphere). 
+
+clock.py converts btwn standard time formats and the MET clock that Fermi uses
+GBMgeo.py: calculations for angular offsets, finds Earth center at a given time
+example.py: basic script showing how to call the necessary functions.
+
+The GBM team is working on making a python suite for people to use to do 
+analysis with GBM but this is unfortunately still some time out.
+
+Let me know if you have any questions,
+-Eric

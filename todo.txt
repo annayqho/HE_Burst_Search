@@ -1,0 +1,6 @@
+- understand what David Palmer's tool does
+- get the BAT tool to work so that you can give it an RA and Dec and time
+and it returns some kind of sensitivity (upper limit) or tells you that the
+detector wasn't looking in that direction at all
+- understand what the GBM tool does, 
+get it to work for a certain GRB...say iPTF14yb
