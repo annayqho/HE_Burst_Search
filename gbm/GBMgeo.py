@@ -330,29 +330,39 @@ def getPointing(MET, poshistloc=poshistpath):
 
 
 
-
-
-
-def checkGTI(cMET, poshistbase=poshistpath):
+def metToYYMMDD(MET):
+    """ Convert MET (Mission Elapsed Time)
+    to the searchstring needed for checkGTI 
     
-    
-    if not os.path.isdir(poshistbase):
-        poshistbase = 'D:/OneDrive/Work/V404/background/poshistfiles/'
-
+    Parameters
+    ----------
+    MET: Mission Elapsed Time
+    """
     # cMET: Mission Elapsed Time
     # defined as the time since this reference below
     t0 = Time('2001-01-01T00:00:00')
-
     dateobs = str((t0+(cMET)*u.s).value)[0:19]
     diryear = str(dateobs[0:4])
     dirmonth = str(dateobs[5:7])
     dirday = str(dateobs[8:10])
     searchstring = diryear[2:]+dirmonth+dirday
-    print("Searchstring: ")
-    print(searchstring)
-    phf = [ f for f in listdir(poshistbase) if isfile(join(poshistbase,f)) and searchstring in f]
-    print("phf: ")
-    print(phf)
+    return searchstring
+
+
+
+
+def checkGTI(yymmdd, poshistbase=poshistpath):
+    """ Check if mission was operating at the time
+
+    Parameters
+    ----------
+    yymmdd: string of date to check
+    """
+    
+    if not os.path.isdir(poshistbase):
+        poshistbase = 'D:/OneDrive/Work/V404/background/poshistfiles/'
+
+    phf = [ f for f in listdir(poshistbase) if isfile(join(poshistbase,f)) and yymmdd in f]
     
     if not os.path.isfile(poshistbase+phf[0]):    
         getData(cmet, putdir=poshistbase, getPOSflag=True)

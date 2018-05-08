@@ -5,6 +5,7 @@ at the time.
 """
 
 import numpy as np
+import re
 from astropy.time import Time
 from gbm import GBMgeo
 
@@ -21,9 +22,10 @@ def search_gbm(ra, dec, t):
     """
     
     # The original GBM package uses MET: Mission Elapsed Time
-    # However, in practice, you only need the year, month, and day
-    # as a searchstring YYMMDD
-    gtiflag = GBMgeo.checkGTI(met)
+    # I change this to accepting YYMMDD
+    yymmdd = re.sub('-', '', t.value[2:10])
+    # Currently can't run this part because I don't have these poshistfiles
+    # gtiflag = GBMgeo.checkGTI(yymmdd)
 
 
 if __name__=="__main__":
