@@ -6,7 +6,7 @@ at the time.
 
 import numpy as np
 from astropy.time import Time
-from gbm.GBMgeo import GBMgeo
+from gbm import GBMgeo
 
 
 def search_gbm(ra, dec, t):
@@ -19,6 +19,11 @@ def search_gbm(ra, dec, t):
     dec: declination in degrees
     t: time in astropy isot format
     """
+    
+    # The original GBM package uses MET: Mission Elapsed Time
+    # However, in practice, you only need the year, month, and day
+    # as a searchstring YYMMDD
+    gtiflag = GBMgeo.checkGTI(met)
 
 
 if __name__=="__main__":
