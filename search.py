@@ -12,7 +12,7 @@ import re
 from astropy.time import Time
 from gbm import GBMgeo
 from gbm.clock import *
-from swiftbat import *
+from swiftbat_python.swiftbat import swinfo
 
 
 
@@ -62,7 +62,16 @@ def search_gbm(ra, dec, t):
 def search_bat(ra, dec, t):
     """ Search the BAT history to see whether the detector was 
     sensitive to a given position at a given time """
-    swinfo.usage("hello")
+    # I think you want to use -v for 'verbose'
+    # I think that you also want ot use the -t for 'timerange'
+    # I thikn that you also want to use the -p for position
+    # like 'RA,Dec'
+    swinfo.main(
+            ['2014-02-26T10:02:57', '-s 221.491713_14.993165'])
+    #argv=[t.isot, 'verbose'])
+
+    # sourcename can be
+    # '123.4_-56.7' for RA_dec
 
 
 if __name__=="__main__":
