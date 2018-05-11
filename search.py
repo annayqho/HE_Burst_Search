@@ -6,6 +6,7 @@ at the time.
 
 import numpy as np
 import sys
+import glob
 from subprocess import call
 import re
 from astropy.time import Time
@@ -35,7 +36,8 @@ def search_gbm(ra, dec, t):
     print(fname)
     call(["wget", fname])
 
-    # gtiflag = GBMgeo.checkGTI(yymmdd)
+    # Check for the time
+    gtiflag = GBMgeo.checkGTI(yymmdd)
 
 
 if __name__=="__main__":
