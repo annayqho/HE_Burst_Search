@@ -67,7 +67,7 @@ def search_bat(ra, dec, t):
     # I thikn that you also want to use the -p for position
     # like 'RA,Dec'
     swinfo.main(
-            ['2014-02-26T10:02:57', '-s 221.491713_14.993165'])
+            ['filename', '2014-02-26T10:02:57', '-s 221.491713_14.993165'])
     #argv=[t.isot, 'verbose'])
 
     # sourcename can be
