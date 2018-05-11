@@ -340,8 +340,6 @@ def checkGTI(cMET, poshistbase=poshistpath):
     
     if not os.path.isdir(poshistbase):
         poshistbase = '/Users/annaho/Dropbox/Projects/Research/HE_Burst_Search/'
-
-    phf = [ f for f in listdir(poshistbase) if isfile(join(poshistbase,f)) and searchstring in f]
     
     t0 = Time('2001-01-01T00:00:00')
     dateobs = str((t0+(cMET)*u.s).value)[0:19]
