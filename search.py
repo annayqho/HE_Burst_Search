@@ -11,6 +11,7 @@ from subprocess import call
 import re
 from astropy.time import Time
 from gbm import GBMgeo
+from gbm.clock import *
 
 
 def search_gbm(ra, dec, t):
@@ -24,11 +25,11 @@ def search_gbm(ra, dec, t):
     t: time in astropy isot format
     """
     
-    # The original GBM package uses MET: Mission Elapsed Time
-    # I change this to accepting YYMMDD
-    yymmdd = re.sub('-', '', t.value[2:10])
-
+    # The GBM package uses MET: Mission Elapsed Time
+    cMET = utc2fermi(t)
+    
     # Download the relevant poshist file
+    yymmdd = re.sub('-', '', t.value[2:10])
     root = "https://heasarc.gsfc.nasa.gov/FTP/fermi/data/gbm/daily/"
     date = "20" + yymmdd[0:2] + "/" + yymmdd[2:4] + "/" + yymmdd[4:6] 
     fname = root + date + "/current/glg_poshist_all_%s_v00.fit" %yymmdd
@@ -37,7 +38,7 @@ def search_gbm(ra, dec, t):
     call(["wget", fname])
 
     # Check for the time
-    gtiflag = GBMgeo.checkGTI(yymmdd)
+    gtiflag = GBMgeo.checkGTI(cMET)
 
 
 if __name__=="__main__":
