@@ -330,27 +330,6 @@ def getPointing(MET, poshistloc=poshistpath):
 
 
 
-def metToYYMMDD(MET):
-    """ Convert MET (Mission Elapsed Time)
-    to the searchstring needed for checkGTI 
-    
-    Parameters
-    ----------
-    MET: Mission Elapsed Time
-    """
-    # cMET: Mission Elapsed Time
-    # defined as the time since this reference below
-    t0 = Time('2001-01-01T00:00:00')
-    dateobs = str((t0+(cMET)*u.s).value)[0:19]
-    diryear = str(dateobs[0:4])
-    dirmonth = str(dateobs[5:7])
-    dirday = str(dateobs[8:10])
-    searchstring = diryear[2:]+dirmonth+dirday
-    return searchstring
-
-
-
-
 def checkGTI(cMET, poshistbase=poshistpath):
     """ Check if mission was operating at the time
 
@@ -362,7 +341,7 @@ def checkGTI(cMET, poshistbase=poshistpath):
     if not os.path.isdir(poshistbase):
         poshistbase = '/Users/annaho/Dropbox/Projects/Research/HE_Burst_Search/'
 
-    phf = [ f for f in listdir(poshistbase) if isfile(join(poshistbase,f)) and yymmdd in f]
+    phf = [ f for f in listdir(poshistbase) if isfile(join(poshistbase,f)) and searchstring in f]
     
     t0 = Time('2001-01-01T00:00:00')
     dateobs = str((t0+(cMET)*u.s).value)[0:19]
