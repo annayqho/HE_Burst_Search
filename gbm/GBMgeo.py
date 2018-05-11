@@ -31,7 +31,7 @@ import os
 
 
 
-poshistpath = '/Users/burnse/Desktop/OneDrive/Work/V404/background/poshistfiles/'
+poshistpath = '/Users/annaho/Dropbox/Projects/Research/HE_Burst_Search/'
 
 naitable = """
  n0  45.9  20.6
