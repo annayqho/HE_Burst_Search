@@ -12,6 +12,8 @@ import re
 from astropy.time import Time
 from gbm import GBMgeo
 from gbm.clock import *
+from swiftbat import *
+
 
 
 def search_gbm(ra, dec, t):
@@ -43,11 +45,42 @@ def search_gbm(ra, dec, t):
 
     # Check for the time
     gtiflag = GBMgeo.checkGTI(cMET)
+    if not gtiflag:
+        print('Occurred during a bad time interval (likely SAA)')
+    else:
+        print('Occurred during a good time interval')
+        Era, Edec = GBMgeo.getEarthCenter(cMET)
+        angularoffset = GBMgeo.getAngOff(Era, Edec, ra, dec)
+        if angularoffset > 68.0:
+            print('The source was visible to GBM at this time')
+        elif angularoffset > 66.0:
+            print('The source was possibly visible to GBM at this time (between 66 and 68 deg offset)')
+        else:
+            print('The source was occulted at this time')
+
+
+def search_bat(ra, dec, t):
+    """ Search the BAT history to see whether the detector was 
+    sensitive to a given position at a given time """
+    swinfo.usage("hello")
 
 
 if __name__=="__main__":
     ra = 221.491713
     dec = 14.993165
     # burst time of iPTF14yb
+    print("Checking for iPTF14yb")
     t = Time('2014-02-26T10:02:57', format='isot', scale='utc')
-    search_gbm(ra, dec, t)
+    # search_gbm(ra, dec, t)
+    # correct answer: offline due to SAA passage
+
+    search_bat(ra, dec, t)
+
+    # burst time of GRB 161228B, the iPTF17cw GRB
+    # ra = 129.290
+    # dec = 43.670
+    # print("Checking for GRB 161228B")
+    # t = Time('2016-12-28T13:15:40.0', format='isot', scale='utc')
+    # search_gbm(ra, dec, t)
+
+    
