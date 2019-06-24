@@ -15,8 +15,7 @@ from gbm.clock import *
 from swiftbat_python.swiftbat import swinfo
 
 
-
-def search_gbm(ra, dec, t):
+def search_gbm_pointing(ra, dec, t):
     """ Search the GBM history to see whether the detector was
     sensitive to a given position at a given time
     
@@ -26,6 +25,7 @@ def search_gbm(ra, dec, t):
     dec: declination in degrees
     t: time in astropy isot format
     """
+    print("Searching GBM")
     
     # The GBM package uses MET: Mission Elapsed Time
     cMET = utc2fermi(t.datetime)
@@ -59,37 +59,16 @@ def search_gbm(ra, dec, t):
             print('The source was occulted at this time')
 
 
-def search_bat(ra, dec, t):
+def search_bat_pointing(ra, dec, t):
     """ Search the BAT history to see whether the detector was 
     sensitive to a given position at a given time """
-    # I think you want to use -v for 'verbose'
-    # I think that you also want ot use the -t for 'timerange'
-    # I thikn that you also want to use the -p for position
-    # like 'RA,Dec'
+    print("Searching BAT")
     swinfo.main(
-            ['filename', '2014-02-26T10:02:57', '-s 221.491713_14.993165'])
-    #argv=[t.isot, 'verbose'])
-
-    # sourcename can be
-    # '123.4_-56.7' for RA_dec
+            ["swinfo.py", t.isot, 
+             "-p %s %s" %(ra,dec)])
 
 
 if __name__=="__main__":
-    ra = 221.491713
-    dec = 14.993165
-    # burst time of iPTF14yb
-    print("Checking for iPTF14yb")
-    t = Time('2014-02-26T10:02:57', format='isot', scale='utc')
-    # search_gbm(ra, dec, t)
-    # correct answer: offline due to SAA passage
-
-    search_bat(ra, dec, t)
-
-    # burst time of GRB 161228B, the iPTF17cw GRB
-    # ra = 129.290
-    # dec = 43.670
-    # print("Checking for GRB 161228B")
-    # t = Time('2016-12-28T13:15:40.0', format='isot', scale='utc')
-    # search_gbm(ra, dec, t)
-
-    
+    ra = 178.181754
+    dec = 25.675033
+    t0 = Time(58233.170324, format='mjd')
