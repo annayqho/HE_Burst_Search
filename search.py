@@ -31,7 +31,8 @@ def search_gbm_pointing(ra, dec, t):
     cMET = utc2fermi(t.datetime)
     
     # Download the relevant poshist file
-    yymmdd = re.sub('-', '', t.value[2:10])
+    yymmdd = re.sub('-', '', t.iso[2:10])
+    print(yymmdd)
     root = "https://heasarc.gsfc.nasa.gov/FTP/fermi/data/gbm/daily/"
     date = "20" + yymmdd[0:2] + "/" + yymmdd[2:4] + "/" + yymmdd[4:6] 
     fname = "glg_poshist_all_%s_v00.fit" %yymmdd
@@ -69,6 +70,8 @@ def search_bat_pointing(ra, dec, t):
 
 
 if __name__=="__main__":
-    ra = 178.181754
-    dec = 25.675033
-    t0 = Time(58233.170324, format='mjd')
+    ra = 279.472820
+    dec = 61.497984
+    times = Time(np.linspace(2458727.8161, 2458728.6161, 10), format='jd')
+    for t0 in times:
+        search_gbm_pointing(ra, dec, t0)
