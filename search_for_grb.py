@@ -4,9 +4,9 @@ what GRBs happened in the last 2 days?
 """
 
 import numpy as np
-from lxml import etree
-import urllib.request
 import requests
+import lxml.html as lh
+import pandas as pd
 import re
 import subprocess
 import os
@@ -109,17 +109,38 @@ def fermi_subthreshold():
     """ 
     check the fermi subthreshold notices
     https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html
+
+    the html scraper borrows heavily from
+    https://towardsdatascience.com/web-scraping-html-tables-with-python-c9baba21059
     """
-    fp = urllib.request.urlopen("https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html")
-    mybytes = fp.read()
-    mystr = mybytes.decode("utf8")
-    fp.close()
-    table = etree.HTML(mystr).find("body/table")
-    rows = iter(table)
-    headers = [col.text for col in next(rows)]
-    for row in rows:
-        values = [col.text for col in row]
-        print(dict(zip(headers,values)))
+    url = "https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html"
+    page = requests.get(url)
+    doc = lh.fromstring(page.content)
+    tr_elements = doc.xpath('//tr')
+
+    # the first element is notes
+    # the second element is the header
+    col = []
+    for ii,t in enumerate(tr_elements[1]):
+        name = t.text_content()
+        print('%d:"%s"' %(ii,name))
+        col.append((name,[ii]))
+
+    # the third element onwards are rows of the table
+    i = 0
+    for j in range(2, len(tr_elements)):
+        T = tr_elements[j]
+        i = 0
+        for t in T.iterchildren():
+            data = t.text_content()
+            col[i][1].append(data)
+            i+=1
+
+    # create dataframe
+    Dict={title:column for (title,column) in col}
+    df=pd.DataFrame(Dict)
+
+
 
 
 if __name__=="__main__":
