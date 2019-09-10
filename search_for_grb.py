@@ -221,12 +221,11 @@ def swift():
 
 
 if __name__=="__main__":
-    # Koala search parameters, for testing
-    ra = 29.880046
-    dec = 23.845460
+    ra = 279.472820
+    dec = 61.497984
     c = SkyCoord(ra, dec, unit='deg')
-    end_time = Time(2458490.6227, format="jd")
-    start_time = Time(2458488.6602, format="jd")
+    end_time = Time(2458728.6798, format="jd")
+    start_time = Time(2458727.8161, format="jd")
     window = [start_time, end_time]
 
     ipn()
