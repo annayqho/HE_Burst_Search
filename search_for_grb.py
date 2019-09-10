@@ -38,7 +38,11 @@ def ipn():
     """
     print("CONDUCTING SEARCH OF IPN CATALOG")
 
-    searchstr = [get_searchstr(t) for t in window]
+    # Make sure that each day is represented
+    window_grid = Time(
+            np.arange(window[0].jd, window[-1].jd+1, 0.5), format='jd')
+    searchstr = [get_searchstr(t) for t in window_grid]
+    searchstr = np.unique(np.array(searchstr))
 
     # Pull out the relevant lines
     fpath = "http://www.ssl.berkeley.edu/ipn3/masterli.txt"
@@ -60,11 +64,13 @@ def ipn():
         burst_datetime = Time(
                 '20%s-%s-%sT%s' %(burst_yy,burst_mm,burst_dd,burst_time), 
                 format='isot')
-        if np.logical_and(burst_datetime > window[0], burst_datetime < window[-1]):
+        print(burst_datetime)
+        if np.logical_and(
+                burst_datetime >= window[0], burst_datetime <= window[-1]):
             final_set.append(l)
 
     print("There are %s bursts in the %s-day window" %(
-        len(final_set), window_size))
+        len(final_set), window[-1]-window[0]))
 
     # Check which spacecraft observed these bursts
     for l in final_set:
@@ -96,7 +102,6 @@ def fermi():
         for ii in np.arange(ncands):
             cand = out[3+ii]
             vals = [i for i in cand.split('|')]
-            print(vals)
             grbname = vals[1]
             grbra = vals[2]
             grbdec = vals[3]
@@ -117,6 +122,8 @@ def fermi_subthreshold():
     the html scraper borrows heavily from
     https://towardsdatascience.com/web-scraping-html-tables-with-python-c9baba21059
     """
+    print('\n')
+    print("CONDUCTING SEARCH OF FERMI SUBTHRESHOLD CATALOG")
     url = "https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html"
     page = requests.get(url)
     doc = lh.fromstring(page.content)
@@ -156,7 +163,7 @@ def fermi_subthreshold():
                 dec = row['Dec(J2000)[deg]']
                 epos = row['Error[deg]']
                 print("Subthreshold burst at %s, %s with error %s" %
-                        ra, dec, epos)
+                        (ra, dec, epos))
                 c2  = SkyCoord(ra, dec, unit='deg')
                 dist = c.separation(c2).degree
                 print("Distance is %s deg from source" %dist)
@@ -173,6 +180,8 @@ def swift():
     I downloaded both the 2018 and 2019 tables,
     assuming that I won't need to search outside that window.
     """
+    print("\n")
+    print("CONDUCTING SEARCH OF SWIFT/BAT CATALOG")
     dat = np.loadtxt("swift_grb_2018.txt", dtype=str, skiprows=1) 
     nrows = dat.shape[0]
     year = ["20%s-%s-%s" %(i[0:2],i[2:4],i[4:6]) for i in dat[:,0]]
@@ -212,16 +221,13 @@ def swift():
 
 
 if __name__=="__main__":
-    window_size = 2
-
     # Koala search parameters, for testing
-    ra = 30.063307 
-    dec = 16.799255
+    ra = 29.880046
+    dec = 23.845460
     c = SkyCoord(ra, dec, unit='deg')
-    time = Time(2458373.9075, format="jd")
-    window = Time(
-            np.linspace(time.jd-window_size, time.jd, window_size), 
-            format='jd')
+    end_time = Time(2458490.6227, format="jd")
+    start_time = Time(2458488.6602, format="jd")
+    window = [start_time, end_time]
 
     ipn()
     fermi()
