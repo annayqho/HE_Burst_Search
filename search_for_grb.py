@@ -4,6 +4,7 @@ what GRBs happened in the last 2 days?
 """
 
 import numpy as np
+import requests
 import re
 import subprocess
 import os
@@ -52,6 +53,27 @@ for l in lines[keep]:
 ######################################
 
 # CHECK FERMI
+www = 'https://heasarc.gsfc.nasa.gov/db-perl/W3Browse/w3query.pl'
+data = {}
+data['tablehead'] = 'name=heasarc_fermigbrst&description=Fermi GBM Burst Catalog&url=http://heasarc.gsfc.nasa.gov/W3Browse/fermi/fermigbrst.html&archive=Y&radius=180&mission=FERMI&priority=1&tabletype=Object'
+data['Time'] = '%s .. %s' %(window[0].mjd, window[-1].mjd)
+data['displaymode'] = 'PureTextDisplay'
+r = requests.post(url = www, data = data)
+out = np.array([i for i in r.text.split('\n') if i])
+header = [i for i in out[2].split('|')]
+ncands = len(out[3:])
+if ncands == 0:
+    print("No GRBs in Fermi")
+else:
+    print("Found %s in Fermi" %ncands)
+    for ii in np.arange(ncands):
+        cands = out[ii]
+        vals = [i for i in out[3+ii].split('|')]
+        grbname = vals[1]
+        grbra = vals[2]
+        grbdec = vals[3]
+        grbtime = vals[4]
+        print("%s with RA=%s, Dec=%s on t=%s" %(grbname,grbra,grbdec,grbtime))
 
 # subthreshold notices: 
 # https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html
