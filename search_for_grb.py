@@ -123,7 +123,6 @@ def fermi_subthreshold():
     col = []
     for ii,t in enumerate(tr_elements[1]):
         name = t.text_content()
-        print('%d:"%s"' %(ii,name))
         col.append((name,[]))
 
     # the third element onwards are rows of the table
@@ -140,6 +139,25 @@ def fermi_subthreshold():
     df=pd.DataFrame(Dict)
 
 
+    # Now, go through the table and check whether each burst
+    # is consistent with the time interval.
+    # If so, calculate the RA and Dec offset
+    for index,row in df.iterrows():
+        date = '20' + str('-'.join(row['Date'].split('/')))
+        time = row['Time UT']
+        datetime = Time('%sT%s' %(date,time), format='isot')
+        if np.logical_and(datetime > window[0], datetime < window[-1]):
+            if row['Rel'] != 2:
+                ra = row['RA(J2000)[deg]']
+                dec = row['Dec(J2000)[deg]']
+                epos = row['Error[deg]']
+                print("Subthreshold burst at %s, %s with error %s" %
+                        ra, dec, epos)
+                c2  = SkyCoord(ra, dec, unit='deg')
+                dist = c.separation(c2).degree
+                print("Distance is %s deg from source" %dist)
+                return ""
+    print("No Fermi subthreshold bursts found")
 
 
 if __name__=="__main__":
@@ -151,6 +169,7 @@ if __name__=="__main__":
     c = SkyCoord(ra, dec, unit='deg')
     time = Time(2458373.9075, format="jd")
     window = Time(
-            np.linspace(time.jd-window_size, time.jd, window_size), format='jd')
+            np.linspace(time.jd-window_size, time.jd, window_size), 
+            format='jd')
 
     fermi_subthreshold()
