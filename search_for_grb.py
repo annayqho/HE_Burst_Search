@@ -48,3 +48,10 @@ for l in lines[keep]:
     det_by = np.array(
             [header[i.start():i.end()] for i in re.finditer('YES', l)])
     print(det_by)
+
+######################################
+
+# CHECK FERMI
+
+# subthreshold notices: 
+# https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html
