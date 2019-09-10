@@ -1,6 +1,10 @@
 """ 
-Given a specific position and time and search radius, 
-what GRBs happened in the last 2 days?
+Given a specific position and time and search radius
+and search window (in time),
+check IPN, Fermi, and Swift to see whether any GRBs
+were detected.
+
+Note that this assumes that the year is 20XX.
 """
 
 import numpy as np
@@ -158,6 +162,19 @@ def fermi_subthreshold():
                 print("Distance is %s deg from source" %dist)
                 return ""
     print("No Fermi subthreshold bursts found")
+
+######################################
+
+def swift():
+    """ 
+    check the Swift GRB table
+    https://swift.gsfc.nasa.gov/archive/grb_table/
+
+    I downloaded both the 2018 and 2019 tables,
+    assuming that I won't need to search outside that window.
+    """
+    dat = np.loadtxt("swift_grb_2018.txt", dtype=str, skiprows=1) 
+
 
 
 if __name__=="__main__":
