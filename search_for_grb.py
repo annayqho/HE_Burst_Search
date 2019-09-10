@@ -4,6 +4,8 @@ what GRBs happened in the last 2 days?
 """
 
 import numpy as np
+from lxml import etree
+import urllib.request
 import requests
 import re
 import subprocess
@@ -12,16 +14,6 @@ from time import strptime
 from astropy.time import Time
 from astropy.coordinates import SkyCoord
 from astropy import units as u
-
-window_size = 2
-
-# Koala search parameters, for testing
-ra = 30.063307 
-dec = 16.799255
-c = SkyCoord(ra, dec, unit='deg')
-time = Time(2458373.9075, format="jd")
-window = Time(
-        np.linspace(time.jd-window_size, time.jd, window_size), format='jd')
 
 def get_searchstr(t):
     """ useful function for the IPN catalog search """
@@ -112,5 +104,33 @@ def fermi():
             dist = c2.separation(c).degree
             print("The burst is %s deg away from the source" %dist)
 
-# subthreshold notices: 
-# https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html
+
+def fermi_subthreshold():
+    """ 
+    check the fermi subthreshold notices
+    https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html
+    """
+    fp = urllib.request.urlopen("https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html")
+    mybytes = fp.read()
+    mystr = mybytes.decode("utf8")
+    fp.close()
+    table = etree.HTML(mystr).find("body/table")
+    rows = iter(table)
+    headers = [col.text for col in next(rows)]
+    for row in rows:
+        values = [col.text for col in row]
+        print(dict(zip(headers,values)))
+
+
+if __name__=="__main__":
+    window_size = 2
+
+    # Koala search parameters, for testing
+    ra = 30.063307 
+    dec = 16.799255
+    c = SkyCoord(ra, dec, unit='deg')
+    time = Time(2458373.9075, format="jd")
+    window = Time(
+            np.linspace(time.jd-window_size, time.jd, window_size), format='jd')
+
+    fermi_subthreshold()
