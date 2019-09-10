@@ -72,6 +72,8 @@ def search_bat_pointing(ra, dec, t):
 if __name__=="__main__":
     ra = 279.472820
     dec = 61.497984
-    times = Time(np.linspace(2458727.8161, 2458728.6161, 10), format='jd')
-    for t0 in times:
-        search_gbm_pointing(ra, dec, t0)
+    #times = Time(np.linspace(2458727.8161, 2458728.6161, 10), format='jd')
+    #for t0 in times:
+    #    search_gbm_pointing(ra, dec, t0)
+    t0 = Time('2019-09-01T10:13:34', format='isot')
+    search_bat_pointing(ra, dec, t0)
