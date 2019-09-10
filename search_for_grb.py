@@ -58,6 +58,7 @@ data = {}
 data['tablehead'] = 'name=heasarc_fermigbrst&description=Fermi GBM Burst Catalog&url=http://heasarc.gsfc.nasa.gov/W3Browse/fermi/fermigbrst.html&archive=Y&radius=180&mission=FERMI&priority=1&tabletype=Object'
 data['Time'] = '%s .. %s' %(window[0].mjd, window[-1].mjd)
 data['displaymode'] = 'PureTextDisplay'
+data['varon'] = 'error_radius'
 r = requests.post(url = www, data = data)
 out = np.array([i for i in r.text.split('\n') if i])
 header = [i for i in out[2].split('|')]
