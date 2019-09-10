@@ -223,4 +223,7 @@ if __name__=="__main__":
             np.linspace(time.jd-window_size, time.jd, window_size), 
             format='jd')
 
+    ipn()
+    fermi()
     fermi_subthreshold()
+    swift()
