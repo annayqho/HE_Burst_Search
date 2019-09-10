@@ -174,7 +174,41 @@ def swift():
     assuming that I won't need to search outside that window.
     """
     dat = np.loadtxt("swift_grb_2018.txt", dtype=str, skiprows=1) 
+    nrows = dat.shape[0]
+    year = ["20%s-%s-%s" %(i[0:2],i[2:4],i[4:6]) for i in dat[:,0]]
+    time = dat[:,1]
+    ra = dat[:,2].astype(float)
+    dec = dat[:,3].astype(float)
+    epos = dat[:,4].astype(float)
+    date = [Time(
+        '%sT%s' %(year[i],time[i]), format='isot') for i in np.arange(nrows)]
 
+    dat = np.loadtxt("swift_grb_2019.txt", dtype=str, skiprows=1) 
+    nrows = dat.shape[0]
+    year = ["20%s-%s-%s" %(i[0:2],i[2:4],i[4:6]) for i in dat[:,0]]
+    time = dat[:,1]
+    date2 = [Time(
+        '%sT%s' %(year[i],time[i]), format='isot') for i in np.arange(nrows)]
+
+    epos_temp = dat[:,4]
+    epos_temp[epos_temp=='n/a'] = '0'
+
+    ra = np.hstack((ra, dat[:,2].astype(float)))
+    dec = np.hstack((dec, dat[:,3].astype(float)))
+    epos = np.hstack((epos, epos_temp.astype(float)))
+    date.extend(date2)
+    date =np.array(date)
+    
+    keep = np.logical_and(date >= window[0], date <= window[-1])
+    if sum(keep) == 0:
+        print("No Swift/BAT bursts during this window")
+    else:
+        print("%s Swift/BAT bursts during this window" %sum(keep))
+        for i in np.where(keep)[0]:
+            print("Position is %s, %s with error %s deg" %(
+                ra[i],dec[i],epos[i]))
+            c2 = SkyCoord(ra[i], dec[i], unit='deg')
+            print("Separation is %s deg" %c.separation(c2).degree)
 
 
 if __name__=="__main__":
