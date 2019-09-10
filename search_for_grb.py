@@ -124,10 +124,9 @@ def fermi_subthreshold():
     for ii,t in enumerate(tr_elements[1]):
         name = t.text_content()
         print('%d:"%s"' %(ii,name))
-        col.append((name,[ii]))
+        col.append((name,[]))
 
     # the third element onwards are rows of the table
-    i = 0
     for j in range(2, len(tr_elements)):
         T = tr_elements[j]
         i = 0
