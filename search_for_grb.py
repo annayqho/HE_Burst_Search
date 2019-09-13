@@ -158,12 +158,12 @@ def fermi_subthreshold():
         time = row['Time UT']
         datetime = Time('%sT%s' %(date,time), format='isot')
         if np.logical_and(datetime > window[0], datetime < window[-1]):
-            if row['Rel'] != 2:
+            if row['Rel'] != '2':
                 ra = row['RA(J2000)[deg]']
                 dec = row['Dec(J2000)[deg]']
                 epos = row['Error[deg]']
-                print("Subthreshold burst at %s, %s with error %s" %
-                        (ra, dec, epos))
+                print("Subthreshold burst at %s pos %s, %s with error %s" %
+                        (datetime, ra, dec, epos))
                 c2  = SkyCoord(ra, dec, unit='deg')
                 dist = c.separation(c2).degree
                 print("Distance is %s deg from source" %dist)
@@ -221,11 +221,11 @@ def swift():
 
 
 if __name__=="__main__":
-    ra = 279.472820
-    dec = 61.497984
+    ra = 33.089712
+    dec = 12.297698
     c = SkyCoord(ra, dec, unit='deg')
-    end_time = Time(2458728.6798, format="jd")
-    start_time = Time(2458727.8161, format="jd")
+    start_time = Time(2458734.0026, format="jd")
+    end_time = Time(2458736.9367, format="jd")
     window = [start_time, end_time]
 
     ipn()
