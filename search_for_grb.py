@@ -29,13 +29,16 @@ def get_searchstr(t):
 
 ######################################
 
-def ipn():
+def ipn(ra,dec,start,end):
     """ Check the online IPN catalog
     Note that this catalog ends on 30 June 2019
 
     Also assumes that bursts were in 2000 onward.
     Would need to modify for years with 19XX.
     """
+    c = SkyCoord(ra,dec,unit='deg')
+    window = [Time(start, format="jd"), Time(end, format="jd")]
+
     print("CONDUCTING SEARCH OF IPN CATALOG")
 
     # Make sure that each day is represented
@@ -64,7 +67,6 @@ def ipn():
         burst_datetime = Time(
                 '20%s-%s-%sT%s' %(burst_yy,burst_mm,burst_dd,burst_time), 
                 format='isot')
-        print(burst_datetime)
         if np.logical_and(
                 burst_datetime >= window[0], burst_datetime <= window[-1]):
             final_set.append(l)
@@ -80,8 +82,11 @@ def ipn():
 
 ######################################
 
-def fermi():
+def fermi(ra,dec,start,end):
     """ Check the online Fermi burst catalog """
+    c = SkyCoord(ra,dec,unit='deg')
+    window = [Time(start, format="jd"), Time(end, format="jd")]
+
     print("\n")
     print("CONDUCTING SEARCH OF FERMI CATALOG")
 
@@ -114,7 +119,7 @@ def fermi():
             print("The burst is %s deg away from the source" %dist)
 
 
-def fermi_subthreshold():
+def fermi_subthreshold(ra,dec,start,end):
     """ 
     check the fermi subthreshold notices
     https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html
@@ -122,6 +127,9 @@ def fermi_subthreshold():
     the html scraper borrows heavily from
     https://towardsdatascience.com/web-scraping-html-tables-with-python-c9baba21059
     """
+    window = [Time(start, format='jd'), Time(end, format='jd')]
+    c = SkyCoord(ra,dec,unit='deg')
+
     print('\n')
     print("CONDUCTING SEARCH OF FERMI SUBTHRESHOLD CATALOG")
     url = "https://gcn.gsfc.nasa.gov/fermi_gbm_subthresh_archive.html"
@@ -172,7 +180,7 @@ def fermi_subthreshold():
 
 ######################################
 
-def swift():
+def swift(ra,dec,start,end):
     """ 
     check the Swift GRB table
     https://swift.gsfc.nasa.gov/archive/grb_table/
@@ -180,9 +188,12 @@ def swift():
     I downloaded both the 2018 and 2019 tables,
     assuming that I won't need to search outside that window.
     """
+    window = [Time(start, format="jd"), Time(end, format="jd")]
+    c = SkyCoord(ra,dec,unit='deg')
+
     print("\n")
     print("CONDUCTING SEARCH OF SWIFT/BAT CATALOG")
-    dat = np.loadtxt("swift_grb_2018.txt", dtype=str, skiprows=1) 
+    dat = np.loadtxt("/Users/annaho/Dropbox/Projects/Research/HE_Burst_Search/swift_grb_2018.txt", dtype=str, skiprows=1) 
     nrows = dat.shape[0]
     year = ["20%s-%s-%s" %(i[0:2],i[2:4],i[4:6]) for i in dat[:,0]]
     time = dat[:,1]
@@ -192,7 +203,7 @@ def swift():
     date = [Time(
         '%sT%s' %(year[i],time[i]), format='isot') for i in np.arange(nrows)]
 
-    dat = np.loadtxt("swift_grb_2019.txt", dtype=str, skiprows=1) 
+    dat = np.loadtxt("/Users/annaho/Dropbox/Projects/Research/HE_Burst_Search/swift_grb_2019.txt", dtype=str, skiprows=1) 
     nrows = dat.shape[0]
     year = ["20%s-%s-%s" %(i[0:2],i[2:4],i[4:6]) for i in dat[:,0]]
     time = dat[:,1]
@@ -220,15 +231,18 @@ def swift():
             print("Separation is %s deg" %c.separation(c2).degree)
 
 
-if __name__=="__main__":
-    ra = 33.089712
-    dec = 12.297698
+def run(ra,dec,start,end):
+    window = [start, end]
     c = SkyCoord(ra, dec, unit='deg')
-    start_time = Time(2458734.0026, format="jd")
-    end_time = Time(2458736.9367, format="jd")
-    window = [start_time, end_time]
+    ipn(ra,dec,start,end)
+    fermi(ra,dec,start,end)
+    fermi_subthreshold(ra,dec,start,end)
+    swift(ra,dec,start,end)
 
-    ipn()
-    fermi()
-    fermi_subthreshold()
-    swift()
+
+if __name__=="__main__":
+    end = Time(2458880.8358, format='jd')
+    start = Time(2458850.9822, format='jd')
+    ra = 178.946000
+    dec = -17.395850
+    run(ra,dec,start,end)

@@ -12,7 +12,7 @@ import re
 from astropy.time import Time
 from gbm import GBMgeo
 from gbm.clock import *
-from swiftbat_python.swiftbat import swinfo
+#from swiftbat_python.swiftbat import swinfo
 
 
 def search_gbm_pointing(ra, dec, t):
@@ -42,7 +42,7 @@ def search_gbm_pointing(ra, dec, t):
         get = root + date + "/current/glg_poshist_all_%s_v00.fit" %yymmdd
         print("Downloading the relevant poshist file")
         print(get)
-        call(["wget", get])
+        call(["curl", "-LO", get])
 
     # Check for the time
     gtiflag = GBMgeo.checkGTI(cMET)
@@ -70,10 +70,9 @@ def search_bat_pointing(ra, dec, t):
 
 
 if __name__=="__main__":
-    ra = 279.472820
-    dec = 61.497984
-    #times = Time(np.linspace(2458727.8161, 2458728.6161, 10), format='jd')
-    #for t0 in times:
-    #    search_gbm_pointing(ra, dec, t0)
-    t0 = Time('2019-09-01T10:13:34', format='isot')
-    search_bat_pointing(ra, dec, t0)
+    ra = 191.77
+    dec = 45.2006
+    times = Time(np.linspace(2458876.0382, 2458876.7801, 20), format='jd')
+    for t0 in times:
+        search_gbm_pointing(ra, dec, t0)
+    #search_bat_pointing(ra, dec, t0)
